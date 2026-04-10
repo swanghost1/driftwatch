@@ -1,0 +1,28 @@
+# driftwatch.example.yaml
+# Declare the expected state of your services.
+# Copy this file to driftwatch.yaml and customize for your environment.
+
+version: "1"
+
+services:
+  - name: api-server
+    image: myorg/api-server:2.4.1
+    environment: production
+    replicas: 3
+    ports:
+      - 8080
+      - 8443
+    env_vars:
+      LOG_LEVEL: warn
+      DB_HOST: db.internal
+      FEATURE_FLAGS: "payments,search"
+
+  - name: background-worker
+    image: myorg/worker:1.9.0
+    environment: production
+    replicas: 2
+    ports: []
+    env_vars:
+      LOG_LEVEL: info
+      QUEUE_URL: amqp://queue.internal:5672
+      CONCURRENCY: "4"
