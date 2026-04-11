@@ -43,6 +43,17 @@ func LoadFromFile(path string) (*DriftConfig, error) {
 	return &cfg, nil
 }
 
+// ServiceByName returns the ServiceConfig with the given name, or an error if
+// no service with that name exists in the config.
+func (c *DriftConfig) ServiceByName(name string) (*ServiceConfig, error) {
+	for i := range c.Services {
+		if c.Services[i].Name == name {
+			return &c.Services[i], nil
+		}
+	}
+	return nil, fmt.Errorf("service %q not found in config", name)
+}
+
 // validate performs basic sanity checks on the loaded config.
 func validate(cfg *DriftConfig) error {
 	if cfg.Version == "" {
