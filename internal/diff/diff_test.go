@@ -64,6 +64,22 @@ func TestCompare_ExtraLiveField(t *testing.T) {
 	}
 }
 
+// TestCompare_MultipleDrifts verifies that all differing fields are reported
+// when more than one field diverges between declared and live state.
+func TestCompare_MultipleDrifts(t *testing.T) {
+	declared := map[string]string{"image": "nginx:1.25", "replicas": "3", "env_DEBUG": "false"}
+	live := map[string]string{"image": "nginx:1.24", "replicas": "5", "env_DEBUG": "false"}
+
+	res := diff.Compare("web", declared, live)
+
+	if !res.HasDrift() {
+		t.Fatal("expected drift but got none")
+	}
+	if len(res.Fields) != 2 {
+		t.Fatalf("expected 2 field diffs, got %d", len(res.Fields))
+	}
+}
+
 func TestResult_Summary_NoDrift(t *testing.T) {
 	res := diff.Result{Service: "svc"}
 	if !strings.Contains(res.Summary(), "no drift") {
