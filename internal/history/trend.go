@@ -54,3 +54,16 @@ func WriteTrend(w io.Writer, summaries []RunSummary) error {
 	}
 	return tw.Flush()
 }
+
+// AverageDriftRate returns the mean drift rate across all provided summaries.
+// It returns 0 if summaries is empty.
+func AverageDriftRate(summaries []RunSummary) float64 {
+	if len(summaries) == 0 {
+		return 0
+	}
+	var total float64
+	for _, s := range summaries {
+		total += s.DriftRate
+	}
+	return total / float64(len(summaries))
+}
