@@ -13,6 +13,19 @@
 //	50–64   D  Poor
 //	0–49    F  Critical
 //
-// The Trend type allows callers to accumulate scores over time and determine
-// whether the overall drift health is improving, degrading, or stable.
+// # Computing a Score
+//
+// Use [Compute] to derive a score from a snapshot of service states:
+//
+//	score := scoring.Compute(total, drifted)
+//	grade := score.Grade()
+//
+// # Tracking Trends
+//
+// The [Trend] type allows callers to accumulate scores over time and determine
+// whether the overall drift health is improving, degrading, or stable:
+//
+//	var t scoring.Trend
+//	t.Record(score)
+//	fmt.Println(t.Direction()) // Improving, Degrading, or Stable
 package scoring
