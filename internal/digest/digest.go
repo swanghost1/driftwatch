@@ -66,3 +66,14 @@ func Equal(a, b ServiceSnapshot) (bool, error) {
 	}
 	return ha == hb, nil
 }
+
+// MustCompute is like Compute but panics if hashing fails. It is intended
+// for use in tests and initialisation code where a hashing failure indicates
+// an unrecoverable programming error.
+func MustCompute(s ServiceSnapshot) string {
+	h, err := Compute(s)
+	if err != nil {
+		panic(err)
+	}
+	return h
+}
