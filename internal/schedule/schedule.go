@@ -56,3 +56,16 @@ func (s Schedule) IsDue(last time.Time, now time.Time) (bool, error) {
 	}
 	return !now.Before(next), nil
 }
+
+// TimeUntilNext returns the duration remaining until the next scheduled run.
+// If the check is already due, it returns 0.
+func (s Schedule) TimeUntilNext(last time.Time, now time.Time) (time.Duration, error) {
+	next, err := s.NextRun(last)
+	if err != nil {
+		return 0, err
+	}
+	if !now.Before(next) {
+		return 0, nil
+	}
+	return next.Sub(now), nil
+}
