@@ -38,6 +38,12 @@ func Apply(results []drift.Result, opts Options) []drift.Result {
 	return out
 }
 
+// ApplyOne runs the configured normalization steps over a single drift result,
+// returning a new normalised copy. The original is not mutated.
+func ApplyOne(r drift.Result, opts Options) drift.Result {
+	return normaliseResult(r, opts)
+}
+
 func normaliseResult(r drift.Result, opts Options) drift.Result {
 	if opts.TrimWhitespace {
 		r.Service = strings.TrimSpace(r.Service)
