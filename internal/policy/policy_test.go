@@ -88,3 +88,14 @@ func TestEvaluate_NonBlockedField_NoViolation(t *testing.T) {
 		t.Fatalf("expected no violations, got %d", len(violations))
 	}
 }
+
+func TestEvaluate_MultipleBlockedFields_ReturnsAllViolations(t *testing.T) {
+	results := makeResults(map[string][]string{
+		"svc-a": {"image", "replicas"},
+	})
+	rule := policy.Rule{MaxDriftedServices: 10, BlockedFields: []string{"image", "replicas"}}
+	violations := policy.Evaluate(results, rule)
+	if len(violations) != 2 {
+		t.Fatalf("expected 2 blocked-field violations, got %d", len(violations))
+	}
+}
