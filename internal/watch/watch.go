@@ -23,6 +23,9 @@ type Options struct {
 
 // Watch monitors path and calls h after each stable write event.
 // It blocks until ctx is cancelled or a fatal error occurs.
+//
+// The handler is debounced: rapid successive file events (e.g. from editors
+// that write via a temp-file rename) are collapsed into a single call.
 func Watch(ctx context.Context, path string, opts Options, h Handler) error {
 	if opts.Debounce == 0 {
 		opts.Debounce = 500 * time.Millisecond
@@ -43,6 +46,9 @@ func Watch(ctx context.Context, path string, opts Options, h Handler) error {
 	for {
 		select {
 		case <-ctx.Done():
+			if debounce != nil {
+				debounce.Stop()
+			}
 			return nil
 
 		case event, ok := <-w.Events:
