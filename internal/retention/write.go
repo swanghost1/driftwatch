@@ -32,3 +32,12 @@ func Write(w io.Writer, r Report) error {
 
 	return tw.Flush()
 }
+
+// Summary returns a single-line string describing the prune result,
+// suitable for logging or structured output.
+func (r Report) Summary() string {
+	if len(r.Pruned) == 0 {
+		return fmt.Sprintf("retention prune at %s: nothing removed", r.RanAt.Format(time.RFC3339))
+	}
+	return fmt.Sprintf("retention prune at %s: removed %d file(s)", r.RanAt.Format(time.RFC3339), len(r.Pruned))
+}
